@@ -11,19 +11,17 @@ The project follows a clean layered architecture:
 ├── go.mod                 # Go module dependencies
 ├── go.sum                 # Dependency checksums
 ├── Dockerfile             # Container configuration
-├── docker-compose.yml     # Multi-service orchestration
+├── docker-compose.yml     # Database setup with sample data
 ├── init.sql              # Database initialization with sample data
-├── src/
-│   ├── controllers/      # HTTP request handlers
-│   ├── business/         # Business logic layer
-│   ├── dao/             # Data access objects
-│   ├── dto/             # Data transfer objects
-│   ├── models/          # Database models
-│   ├── constants/       # Application constants
-│   ├── mappers/         # Object mapping utilities
-│   └── interfaces/      # Service interfaces
-└── dev-tools/
-    └── docker-compose.yml # Development database setup
+└── src/
+    ├── controllers/      # HTTP request handlers
+    ├── business/         # Business logic layer
+    ├── dao/             # Data access objects
+    ├── dto/             # Data transfer objects
+    ├── models/          # Database models
+    ├── constants/       # Application constants
+    ├── mappers/         # Object mapping utilities
+    └── interfaces/      # Service interfaces
 ```
 
 ## 🚀 Quick Start
@@ -32,25 +30,25 @@ The project follows a clean layered architecture:
 
 - Go 1.21 or higher
 - Docker and Docker Compose
-- PostgreSQL with PostGIS (handled by Docker)
+- PostgreSQL with PostGIS (installed & handled by Docker)
 
 ### 1. Clone and Setup
 
 ```bash
 git clone <repository-url>
-cd theatre-management-system
+cd go-backend-sample
 ```
 
 ### 2. Start Database
 
 ```bash
-docker-compose up -d
+docker compose up -d
 ```
 
 This will start:
 
 - PostgreSQL with PostGIS on port 5433
-- pgAdmin on port 8888 (admin@theatre.com / admin)
+- Database will be pre-loaded with sample data from `init.sql`
 
 ### 3. Install Dependencies
 

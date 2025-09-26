@@ -4,6 +4,98 @@ CREATE EXTENSION IF NOT EXISTS postgis;
 -- Connect to the database
 \c theatre_api;
 
+-- Create tables (matching GORM models)
+CREATE TABLE IF NOT EXISTS locations (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    deleted_at TIMESTAMPTZ,
+    name VARCHAR(255) NOT NULL,
+    city VARCHAR(255) NOT NULL,
+    state VARCHAR(255) NOT NULL,
+    country VARCHAR(255) NOT NULL,
+    latitude DECIMAL(10,8) NOT NULL,
+    longitude DECIMAL(11,8) NOT NULL,
+    postal_code VARCHAR(20),
+    address TEXT,
+    description TEXT,
+    is_active BOOLEAN NOT NULL DEFAULT true
+);
+
+CREATE TABLE IF NOT EXISTS theatre_types (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    deleted_at TIMESTAMPTZ,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    description TEXT,
+    is_active BOOLEAN NOT NULL DEFAULT true
+);
+
+CREATE TABLE IF NOT EXISTS show_types (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    deleted_at TIMESTAMPTZ,
+    name VARCHAR(255) NOT NULL UNIQUE,
+    description TEXT,
+    is_active BOOLEAN NOT NULL DEFAULT true
+);
+
+CREATE TABLE IF NOT EXISTS theatres (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    deleted_at TIMESTAMPTZ,
+    name VARCHAR(255) NOT NULL,
+    description TEXT,
+    capacity INTEGER NOT NULL CHECK (capacity > 0),
+    address TEXT,
+    phone VARCHAR(50),
+    email VARCHAR(255),
+    website VARCHAR(255),
+    image_url TEXT,
+    is_featured BOOLEAN NOT NULL DEFAULT false,
+    is_active BOOLEAN NOT NULL DEFAULT true,
+    location_id UUID NOT NULL REFERENCES locations(id),
+    theatre_type_id UUID NOT NULL REFERENCES theatre_types(id)
+);
+
+CREATE TABLE IF NOT EXISTS shows (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
+    deleted_at TIMESTAMPTZ,
+    title VARCHAR(255) NOT NULL,
+    description TEXT,
+    director VARCHAR(255),
+    "cast" TEXT,
+    duration INTEGER NOT NULL CHECK (duration > 0),
+    start_date TIMESTAMPTZ,
+    end_date TIMESTAMPTZ,
+    price DECIMAL(10,2) CHECK (price >= 0),
+    image_url TEXT,
+    trailer_url TEXT,
+    is_featured BOOLEAN NOT NULL DEFAULT false,
+    is_active BOOLEAN NOT NULL DEFAULT true,
+    theatre_id UUID NOT NULL REFERENCES theatres(id),
+    show_type_id UUID NOT NULL REFERENCES show_types(id),
+    CHECK (end_date IS NULL OR start_date IS NULL OR end_date >= start_date)
+);
+
+-- Create indexes for better performance
+CREATE INDEX IF NOT EXISTS idx_locations_coordinates ON locations(latitude, longitude);
+CREATE INDEX IF NOT EXISTS idx_locations_active ON locations(is_active);
+CREATE INDEX IF NOT EXISTS idx_theatres_location ON theatres(location_id);
+CREATE INDEX IF NOT EXISTS idx_theatres_type ON theatres(theatre_type_id);
+CREATE INDEX IF NOT EXISTS idx_theatres_active ON theatres(is_active);
+CREATE INDEX IF NOT EXISTS idx_theatres_featured ON theatres(is_featured);
+CREATE INDEX IF NOT EXISTS idx_shows_theatre ON shows(theatre_id);
+CREATE INDEX IF NOT EXISTS idx_shows_type ON shows(show_type_id);
+CREATE INDEX IF NOT EXISTS idx_shows_active ON shows(is_active);
+CREATE INDEX IF NOT EXISTS idx_shows_featured ON shows(is_featured);
+CREATE INDEX IF NOT EXISTS idx_shows_dates ON shows(start_date, end_date);
+
 -- Insert sample locations (expanded to support 100+ theatres)
 INSERT INTO locations (id, name, city, state, country, latitude, longitude, postal_code, address, description, is_active, created_at, updated_at) VALUES
 (gen_random_uuid(), 'Manhattan Theater District', 'New York', 'New York', 'United States', 40.7589, -73.9851, '10036', 'Times Square, NYC', 'Heart of Broadway theater district', true, NOW(), NOW()),
@@ -158,29 +250,39 @@ BEGIN
         
         -- Insert 2-4 shows per theater
         FOR j IN 1..(2 + (random() * 3)::integer) LOOP
-            INSERT INTO shows (
-                id, title, description, director, "cast", duration, start_date, end_date, 
-                price, image_url, trailer_url, is_featured, is_active, theatre_id, show_type_id, 
-                created_at, updated_at
-            ) VALUES (
-                gen_random_uuid(),
-                show_titles[((i*j-1) % array_length(show_titles, 1)) + 1],
-                'A captivating theatrical experience that will leave audiences mesmerized with outstanding performances and stunning production values.',
-                directors[((i*j-1) % array_length(directors, 1)) + 1],
-                'Talented ensemble cast featuring award-winning performers',
-                (90 + random() * 120)::integer, -- Duration between 90-210 minutes
-                CURRENT_DATE + (random() * 365 - 180)::integer, -- Start date within past 6 months to next 6 months
-                CURRENT_DATE + (random() * 365 + 30)::integer,   -- End date within next year
-                (25 + random() * 175)::numeric(10,2), -- Price between $25-$200
-                'https://example.com/show' || (i*100+j) || '.jpg',
-                CASE WHEN random() < 0.7 THEN 'https://youtube.com/watch?v=show' || (i*100+j) ELSE NULL END,
-                (random() < 0.1), -- 10% chance of being featured
-                true,
-                current_theatre_id,
-                show_type_ids[((i*j-1) % array_length(show_type_ids, 1)) + 1],
-                NOW(),
-                NOW()
-            );
+            DECLARE
+                show_start_date DATE;
+                show_end_date DATE;
+            BEGIN
+                -- Generate start date within past 6 months to next 6 months
+                show_start_date := CURRENT_DATE + (random() * 365 - 180)::integer;
+                -- Generate end date 30-365 days after start date
+                show_end_date := show_start_date + (random() * 335 + 30)::integer;
+                
+                INSERT INTO shows (
+                    id, title, description, director, "cast", duration, start_date, end_date, 
+                    price, image_url, trailer_url, is_featured, is_active, theatre_id, show_type_id, 
+                    created_at, updated_at
+                ) VALUES (
+                    gen_random_uuid(),
+                    show_titles[((i*j-1) % array_length(show_titles, 1)) + 1],
+                    'A captivating theatrical experience that will leave audiences mesmerized with outstanding performances and stunning production values.',
+                    directors[((i*j-1) % array_length(directors, 1)) + 1],
+                    'Talented ensemble cast featuring award-winning performers',
+                    (90 + random() * 120)::integer, -- Duration between 90-210 minutes
+                    show_start_date,
+                    show_end_date,
+                    (25 + random() * 175)::numeric(10,2), -- Price between $25-$200
+                    'https://example.com/show' || (i*100+j) || '.jpg',
+                    CASE WHEN random() < 0.7 THEN 'https://youtube.com/watch?v=show' || (i*100+j) ELSE NULL END,
+                    (random() < 0.1), -- 10% chance of being featured
+                    true,
+                    current_theatre_id,
+                    show_type_ids[((i*j-1) % array_length(show_type_ids, 1)) + 1],
+                    NOW(),
+                    NOW()
+                );
+            END;
         END LOOP;
     END LOOP;
 END $$;
