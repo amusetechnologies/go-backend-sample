@@ -1,0 +1,1346 @@
+{
+	"info": {
+		"_postman_id": "theatre-management-api-collection",
+		"name": "Theatre Management API",
+		"description": "Complete collection of Theatre Management System API endpoints with sample requests and proper query parameters. Import this collection to quickly test all available endpoints.\n\n**Base URL**: http://localhost:8080\n\n**Features Included**:\n- All CRUD operations for Locations, Theatre Types, Show Types, Theatres, and Shows\n- Health check endpoints\n- Search and filtering capabilities\n- Geographic queries (nearby locations and theatres)\n- Pagination examples\n- Sample request bodies with realistic data\n\n**Usage**:\n1. Import this collection into Postman\n2. Ensure your API server is running on localhost:8080\n3. Start with health check to verify connectivity\n4. Use the sample data creation requests to populate the database\n5. Test search and query endpoints with the created data",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Health Check",
+			"item": [
+				{
+					"name": "Health Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/health",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"health"
+							]
+						},
+						"description": "Check if the API is running and healthy"
+					}
+				},
+				{
+					"name": "Readiness Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/ready",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"ready"
+							]
+						},
+						"description": "Check if the application is ready to serve requests"
+					}
+				},
+				{
+					"name": "Liveness Check",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/live",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"live"
+							]
+						},
+						"description": "Simple liveness check for container orchestration"
+					}
+				}
+			]
+		},
+		{
+			"name": "Locations",
+			"item": [
+				{
+					"name": "Create Location",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Manhattan\",\n  \"city\": \"New York\",\n  \"state\": \"New York\",\n  \"country\": \"United States\",\n  \"latitude\": 40.7831,\n  \"longitude\": -73.9712,\n  \"postal_code\": \"10019\",\n  \"address\": \"Manhattan, NY\",\n  \"description\": \"The heart of Broadway theater district\",\n  \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/locations",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"locations"
+							]
+						},
+						"description": "Create a new location"
+					}
+				},
+				{
+					"name": "Get All Locations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/locations?limit=20&offset=0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"locations"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Number of results per page (max 100)"
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"description": "Number of results to skip"
+								}
+							]
+						},
+						"description": "List all locations with pagination"
+					}
+				},
+				{
+					"name": "Get Location by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/locations/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"locations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "123e4567-e89b-12d3-a456-426614174000",
+									"description": "Location UUID"
+								}
+							]
+						},
+						"description": "Get a specific location by ID"
+					}
+				},
+				{
+					"name": "Update Location",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Updated Manhattan\",\n  \"description\": \"Updated description of Broadway theater district\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/locations/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"locations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "123e4567-e89b-12d3-a456-426614174000",
+									"description": "Location UUID"
+								}
+							]
+						},
+						"description": "Update a location (all fields optional)"
+					}
+				},
+				{
+					"name": "Delete Location",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/locations/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"locations",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "123e4567-e89b-12d3-a456-426614174000",
+									"description": "Location UUID"
+								}
+							]
+						},
+						"description": "Delete a location (soft delete)"
+					}
+				},
+				{
+					"name": "Get Active Locations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/locations/active",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"locations",
+								"active"
+							]
+						},
+						"description": "Get all active locations"
+					}
+				},
+				{
+					"name": "Get Nearby Locations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/locations/nearby?latitude=40.7831&longitude=-73.9712&radius=50",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"locations",
+								"nearby"
+							],
+							"query": [
+								{
+									"key": "latitude",
+									"value": "40.7831",
+									"description": "Latitude coordinate (-90 to 90)"
+								},
+								{
+									"key": "longitude",
+									"value": "-73.9712",
+									"description": "Longitude coordinate (-180 to 180)"
+								},
+								{
+									"key": "radius",
+									"value": "50",
+									"description": "Search radius in kilometers (default: 50)"
+								}
+							]
+						},
+						"description": "Find locations within a radius of given coordinates"
+					}
+				},
+				{
+					"name": "Search Locations",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/locations/search?q=manhattan",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"locations",
+								"search"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "manhattan",
+									"description": "Search query string (searches name, city, country)"
+								}
+							]
+						},
+						"description": "Search locations by name, city, or country"
+					}
+				}
+			]
+		},
+		{
+			"name": "Theatre Types",
+			"item": [
+				{
+					"name": "Create Theatre Type",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Broadway\",\n  \"description\": \"Professional theaters in Manhattan's Theater District with 500+ seats\",\n  \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/theatre-types",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"theatre-types"
+							]
+						},
+						"description": "Create a new theatre type"
+					}
+				},
+				{
+					"name": "Get All Theatre Types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/theatre-types?limit=20&offset=0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"theatre-types"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Number of results per page (max 100)"
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"description": "Number of results to skip"
+								}
+							]
+						},
+						"description": "List all theatre types with pagination"
+					}
+				},
+				{
+					"name": "Get Theatre Type by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/theatre-types/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"theatre-types",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "123e4567-e89b-12d3-a456-426614174001",
+									"description": "Theatre Type UUID"
+								}
+							]
+						},
+						"description": "Get a specific theatre type by ID"
+					}
+				},
+				{
+					"name": "Update Theatre Type",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Updated description for Broadway theaters\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/theatre-types/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"theatre-types",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "123e4567-e89b-12d3-a456-426614174001",
+									"description": "Theatre Type UUID"
+								}
+							]
+						},
+						"description": "Update a theatre type"
+					}
+				},
+				{
+					"name": "Delete Theatre Type",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/theatre-types/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"theatre-types",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "123e4567-e89b-12d3-a456-426614174001",
+									"description": "Theatre Type UUID"
+								}
+							]
+						},
+						"description": "Delete a theatre type"
+					}
+				},
+				{
+					"name": "Get Active Theatre Types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/theatre-types/active",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"theatre-types",
+								"active"
+							]
+						},
+						"description": "Get all active theatre types"
+					}
+				},
+				{
+					"name": "Get Theatre Type by Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/theatre-types/name/:name",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"theatre-types",
+								"name",
+								":name"
+							],
+							"variable": [
+								{
+									"key": "name",
+									"value": "Broadway",
+									"description": "Theatre type name"
+								}
+							]
+						},
+						"description": "Get a theatre type by name"
+					}
+				}
+			]
+		},
+		{
+			"name": "Show Types",
+			"item": [
+				{
+					"name": "Create Show Type",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Musical\",\n  \"description\": \"Theatrical productions featuring songs, spoken dialogue, acting, and dance\",\n  \"is_active\": true\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/show-types",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"show-types"
+							]
+						},
+						"description": "Create a new show type"
+					}
+				},
+				{
+					"name": "Get All Show Types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/show-types?limit=20&offset=0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"show-types"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Number of results per page (max 100)"
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"description": "Number of results to skip"
+								}
+							]
+						},
+						"description": "List all show types with pagination"
+					}
+				},
+				{
+					"name": "Get Show Type by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/show-types/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"show-types",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "123e4567-e89b-12d3-a456-426614174003",
+									"description": "Show Type UUID"
+								}
+							]
+						},
+						"description": "Get a specific show type by ID"
+					}
+				},
+				{
+					"name": "Update Show Type",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Updated description for musical theater productions\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/show-types/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"show-types",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "123e4567-e89b-12d3-a456-426614174003",
+									"description": "Show Type UUID"
+								}
+							]
+						},
+						"description": "Update a show type"
+					}
+				},
+				{
+					"name": "Delete Show Type",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/show-types/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"show-types",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "123e4567-e89b-12d3-a456-426614174003",
+									"description": "Show Type UUID"
+								}
+							]
+						},
+						"description": "Delete a show type"
+					}
+				},
+				{
+					"name": "Get Active Show Types",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/show-types/active",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"show-types",
+								"active"
+							]
+						},
+						"description": "Get all active show types"
+					}
+				},
+				{
+					"name": "Get Show Type by Name",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/show-types/name/:name",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"show-types",
+								"name",
+								":name"
+							],
+							"variable": [
+								{
+									"key": "name",
+									"value": "Musical",
+									"description": "Show type name"
+								}
+							]
+						},
+						"description": "Get a show type by name"
+					}
+				}
+			]
+		},
+		{
+			"name": "Theatres",
+			"item": [
+				{
+					"name": "Create Theatre",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Majestic Theatre\",\n  \"description\": \"Historic Broadway theater, home to The Phantom of the Opera for over 30 years\",\n  \"capacity\": 1681,\n  \"address\": \"245 W 44th St, New York, NY 10036\",\n  \"phone\": \"(212) 239-6200\",\n  \"email\": \"info@majestictheatre.com\",\n  \"website\": \"https://majestictheatre.com\",\n  \"image_url\": \"https://example.com/majestic.jpg\",\n  \"is_featured\": true,\n  \"is_active\": true,\n  \"location_id\": \"123e4567-e89b-12d3-a456-426614174000\",\n  \"theatre_type_id\": \"123e4567-e89b-12d3-a456-426614174001\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/theatres",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"theatres"
+							]
+						},
+						"description": "Create a new theatre"
+					}
+				},
+				{
+					"name": "Get All Theatres",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/theatres?limit=20&offset=0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"theatres"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Number of results per page (max 100)"
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"description": "Number of results to skip"
+								}
+							]
+						},
+						"description": "List all theatres with pagination"
+					}
+				},
+				{
+					"name": "Get Theatre by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/theatres/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"theatres",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "123e4567-e89b-12d3-a456-426614174002",
+									"description": "Theatre UUID"
+								}
+							]
+						},
+						"description": "Get a specific theatre by ID"
+					}
+				},
+				{
+					"name": "Update Theatre",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Updated description for the historic Majestic Theatre\",\n  \"capacity\": 1700\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/theatres/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"theatres",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "123e4567-e89b-12d3-a456-426614174002",
+									"description": "Theatre UUID"
+								}
+							]
+						},
+						"description": "Update a theatre"
+					}
+				},
+				{
+					"name": "Delete Theatre",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/theatres/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"theatres",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "123e4567-e89b-12d3-a456-426614174002",
+									"description": "Theatre UUID"
+								}
+							]
+						},
+						"description": "Delete a theatre"
+					}
+				},
+				{
+					"name": "Get Active Theatres",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/theatres/active",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"theatres",
+								"active"
+							]
+						},
+						"description": "Get all active theatres"
+					}
+				},
+				{
+					"name": "Get Featured Theatres",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/theatres/featured",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"theatres",
+								"featured"
+							]
+						},
+						"description": "Get all featured theatres"
+					}
+				},
+				{
+					"name": "Get Theatres by Location",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/theatres/location/:locationId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"theatres",
+								"location",
+								":locationId"
+							],
+							"variable": [
+								{
+									"key": "locationId",
+									"value": "123e4567-e89b-12d3-a456-426614174000",
+									"description": "Location UUID"
+								}
+							]
+						},
+						"description": "Get theatres by location ID"
+					}
+				},
+				{
+					"name": "Get Theatres by Type",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/theatres/type/:typeId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"theatres",
+								"type",
+								":typeId"
+							],
+							"variable": [
+								{
+									"key": "typeId",
+									"value": "123e4567-e89b-12d3-a456-426614174001",
+									"description": "Theatre Type UUID"
+								}
+							]
+						},
+						"description": "Get theatres by theatre type ID"
+					}
+				},
+				{
+					"name": "Get Nearby Theatres",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/theatres/nearby?latitude=40.7831&longitude=-73.9712&radius=10",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"theatres",
+								"nearby"
+							],
+							"query": [
+								{
+									"key": "latitude",
+									"value": "40.7831",
+									"description": "Latitude coordinate (-90 to 90)"
+								},
+								{
+									"key": "longitude",
+									"value": "-73.9712",
+									"description": "Longitude coordinate (-180 to 180)"
+								},
+								{
+									"key": "radius",
+									"value": "10",
+									"description": "Search radius in kilometers (default: 50)"
+								}
+							]
+						},
+						"description": "Find theatres within a radius of given coordinates"
+					}
+				},
+				{
+					"name": "Search Theatres",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/theatres/search?q=broadway",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"theatres",
+								"search"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "broadway",
+									"description": "Search query string (searches name or description)"
+								}
+							]
+						},
+						"description": "Search theatres by name or description"
+					}
+				}
+			]
+		},
+		{
+			"name": "Shows",
+			"item": [
+				{
+					"name": "Create Show",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"title\": \"Hamilton\",\n  \"description\": \"Lin-Manuel Miranda's revolutionary musical about Alexander Hamilton\",\n  \"director\": \"Thomas Kail\",\n  \"cast\": \"Lin-Manuel Miranda, Daveed Diggs, Leslie Odom Jr.\",\n  \"duration\": 165,\n  \"start_date\": \"2024-02-01T00:00:00Z\",\n  \"end_date\": \"2024-11-30T00:00:00Z\",\n  \"price\": 200.0,\n  \"image_url\": \"https://example.com/hamilton.jpg\",\n  \"trailer_url\": \"https://youtube.com/watch?v=hamilton\",\n  \"is_featured\": true,\n  \"is_active\": true,\n  \"theatre_id\": \"123e4567-e89b-12d3-a456-426614174002\",\n  \"show_type_id\": \"123e4567-e89b-12d3-a456-426614174003\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/shows",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"shows"
+							]
+						},
+						"description": "Create a new show"
+					}
+				},
+				{
+					"name": "Get All Shows",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/shows?limit=20&offset=0",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"shows"
+							],
+							"query": [
+								{
+									"key": "limit",
+									"value": "20",
+									"description": "Number of results per page (max 100)"
+								},
+								{
+									"key": "offset",
+									"value": "0",
+									"description": "Number of results to skip"
+								}
+							]
+						},
+						"description": "List all shows with pagination"
+					}
+				},
+				{
+					"name": "Get Show by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/shows/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"shows",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "123e4567-e89b-12d3-a456-426614174004",
+									"description": "Show UUID"
+								}
+							]
+						},
+						"description": "Get a specific show by ID"
+					}
+				},
+				{
+					"name": "Update Show",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"description\": \"Updated description for Hamilton musical\",\n  \"price\": 250.0\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/shows/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"shows",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "123e4567-e89b-12d3-a456-426614174004",
+									"description": "Show UUID"
+								}
+							]
+						},
+						"description": "Update a show"
+					}
+				},
+				{
+					"name": "Delete Show",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/shows/:id",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"shows",
+								":id"
+							],
+							"variable": [
+								{
+									"key": "id",
+									"value": "123e4567-e89b-12d3-a456-426614174004",
+									"description": "Show UUID"
+								}
+							]
+						},
+						"description": "Delete a show"
+					}
+				},
+				{
+					"name": "Get Active Shows",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/shows/active",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"shows",
+								"active"
+							]
+						},
+						"description": "Get all active shows"
+					}
+				},
+				{
+					"name": "Get Featured Shows",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/shows/featured",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"shows",
+								"featured"
+							]
+						},
+						"description": "Get all featured shows"
+					}
+				},
+				{
+					"name": "Get Current Shows",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/shows/current",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"shows",
+								"current"
+							]
+						},
+						"description": "Get shows that are currently running"
+					}
+				},
+				{
+					"name": "Get Upcoming Shows",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/shows/upcoming",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"shows",
+								"upcoming"
+							]
+						},
+						"description": "Get shows that will start in the future"
+					}
+				},
+				{
+					"name": "Get Shows by Theatre",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/shows/theatre/:theatreId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"shows",
+								"theatre",
+								":theatreId"
+							],
+							"variable": [
+								{
+									"key": "theatreId",
+									"value": "123e4567-e89b-12d3-a456-426614174002",
+									"description": "Theatre UUID"
+								}
+							]
+						},
+						"description": "Get shows by theatre ID"
+					}
+				},
+				{
+					"name": "Get Shows by Type",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/shows/type/:typeId",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"shows",
+								"type",
+								":typeId"
+							],
+							"variable": [
+								{
+									"key": "typeId",
+									"value": "123e4567-e89b-12d3-a456-426614174003",
+									"description": "Show Type UUID"
+								}
+							]
+						},
+						"description": "Get shows by show type ID"
+					}
+				},
+				{
+					"name": "Search Shows",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/api/v1/shows/search?q=hamilton",
+							"host": [
+								"{{baseUrl}}"
+							],
+							"path": [
+								"api",
+								"v1",
+								"shows",
+								"search"
+							],
+							"query": [
+								{
+									"key": "q",
+									"value": "hamilton",
+									"description": "Search query string (searches title, description, director, cast)"
+								}
+							]
+						},
+						"description": "Search shows by title, description, director, or cast"
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:8080",
+			"description": "Base URL for the Theatre Management API"
+		}
+	]
+}
