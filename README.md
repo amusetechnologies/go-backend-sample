@@ -32,7 +32,6 @@ The project follows a clean layered architecture:
 
 - Go 1.21 or higher
 - Docker and Docker Compose
-- PostgreSQL with PostGIS (installed & handled by Docker)
 
 ### 1. Clone and Setup
 
