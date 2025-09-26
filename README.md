@@ -1,6 +1,8 @@
 # Theatre Management System API
 
-A comprehensive Go-based REST API for managing theatres, locations, shows, and their relationships. Built with a layered architecture following best practices for maintainability and scalability.
+This theatre management system provides a robust foundation for managing theatrical venues, shows, and their relationships with proper geographic capabilities and a clean, maintainable architecture.
+
+A comprehensive Go-based REST API with a layered architecture following best practices for maintainability and scalability.
 
 ## 🏗️ Architecture
 
@@ -49,6 +51,14 @@ This will start:
 
 - PostgreSQL with PostGIS on port 5433
 - Database will be pre-loaded with sample data from `init.sql`
+- DB connection info:
+
+```URL: jdbc:postgresql://localhost:5433/theatre_api
+DB: theatre_api
+Port: 5433
+Username: postgres
+Password: postgres
+```
 
 ### 3. Install Dependencies
 
@@ -73,7 +83,7 @@ For easy API testing, import the provided Postman collection:
 Theatre_Management_API.postman_collection.json
 ```
 
-**To import in Postman:**
+**To import endpoints in Postman:**
 
 1. Open Postman
 2. Click "Import" in the top left
@@ -174,68 +184,6 @@ The collection includes:
 - `GET /api/v1/shows/type/:typeId` - Get shows by type
 - `GET /api/v1/shows/search?q=hamilton` - Search shows
 
-## 📝 API Examples
-
-### Create a Location
-
-```bash
-curl -X POST http://localhost:8080/api/v1/locations \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Broadway District",
-    "city": "New York",
-    "state": "New York",
-    "country": "United States",
-    "latitude": 40.7589,
-    "longitude": -73.9851,
-    "postal_code": "10036",
-    "address": "Times Square, NYC",
-    "description": "Heart of Broadway theater"
-  }'
-```
-
-### Create a Theatre
-
-```bash
-curl -X POST http://localhost:8080/api/v1/theatres \
-  -H "Content-Type: application/json" \
-  -d '{
-    "name": "Ambassador Theatre",
-    "description": "Historic Broadway venue",
-    "capacity": 1125,
-    "address": "219 W 49th St, New York, NY",
-    "phone": "(212) 239-6200",
-    "email": "info@ambassador.com",
-    "website": "https://ambassador.com",
-    "location_id": "location-uuid-here",
-    "theatre_type_id": "theatre-type-uuid-here"
-  }'
-```
-
-### Search Shows
-
-```bash
-curl "http://localhost:8080/api/v1/shows/search?q=hamilton"
-```
-
-### Find Nearby Theatres
-
-```bash
-curl "http://localhost:8080/api/v1/theatres/nearby?latitude=40.7831&longitude=-73.9712&radius=10"
-```
-
-## 🔧 Configuration
-
-### Environment Variables
-
-- `PORT` - Server port (default: 8080)
-- `DATABASE_URL` - PostgreSQL connection string (default: postgres://postgres:postgres@localhost:5433/theatre_api?sslmode=disable)
-
-### Pagination
-
-- `limit` - Number of results per page (default: 20, max: 100)
-- `offset` - Number of results to skip (default: 0)
-
 ## 🧪 Sample Data
 
 The application includes comprehensive sample data:
@@ -255,46 +203,6 @@ The application includes comprehensive sample data:
 - **UUID**: Google UUID library
 - **CORS**: Gin CORS middleware
 - **Containerization**: Docker & Docker Compose
-
-## 🔍 Advanced Features
-
-### Geographic Queries
-
-- Find locations and theatres within a radius using PostGIS
-- Coordinate validation and distance calculations
-
-### Caching Ready
-
-- Structure prepared for Redis caching integration
-- Cache keys defined in constants
-
-### Comprehensive Error Handling
-
-- Structured error responses
-- Validation error details
-- HTTP status code mapping
-
-### Business Logic Validation
-
-- Date range validation for shows
-- Foreign key relationship validation
-- Duplicate name prevention for types
-
-## 🚀 Production Deployment
-
-### Docker Build
-
-```bash
-docker build -t theatre-api .
-docker run -p 8080:8080 -e DATABASE_URL="your-db-url" theatre-api
-```
-
-### Environment Setup
-
-1. Set up PostgreSQL with PostGIS extension
-2. Run database migrations (handled automatically)
-3. Configure environment variables
-4. Deploy container or binary
 
 ## 📋 API Response Format
 
@@ -339,8 +247,6 @@ For immediate testing and evaluation, use the provided **Postman collection** (`
 - **Pagination examples**: Limit/offset parameters configured
 - **Search functionality**: Example queries for all search endpoints
 
-Perfect for candidates to quickly explore the API functionality without writing test code.
-
 ## 📚 Development
 
 ### Adding New Features
@@ -360,5 +266,3 @@ Perfect for candidates to quickly explore the API functionality without writing 
 - Follow repository pattern for data access
 - Separate business logic from HTTP handling
 - Use DTOs for API contracts
-
-This theatre management system provides a robust foundation for managing theatrical venues, shows, and their relationships with proper geographic capabilities and a clean, maintainable architecture.
