@@ -10,7 +10,7 @@ import (
 // TheatreType represents different types of theatres (Broadway, Off-Broadway, Regional, etc.)
 type TheatreType struct {
 	ID          uuid.UUID      `json:"id" gorm:"type:uuid;primary_key;default:gen_random_uuid()"`
-	Name        string         `json:"name" gorm:"type:varchar(100);not null;uniqueIndex" validate:"required,min=1,max=100"`
+	Name        string         `json:"name" gorm:"type:varchar(255);not null;unique" validate:"required,min=1,max=100"`
 	Description string         `json:"description" gorm:"type:text" validate:"max=1000"`
 	IsActive    bool           `json:"is_active" gorm:"default:true"`
 	CreatedAt   time.Time      `json:"created_at"`

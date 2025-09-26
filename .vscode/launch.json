@@ -1,0 +1,41 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Launch Go",
+            "type": "go",
+            "request": "launch",
+            "mode": "auto",
+            "program": "${workspaceFolder}/main.go",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "DATABASE_URL": "postgres://postgres:postgres@localhost:5433/theatre_api?sslmode=disable",
+                "PORT": "8080"
+            },
+            "args": [],
+            "showLog": true,
+            "trace": "verbose",
+            "logOutput": "rpc"
+        },
+        {
+            "name": "Launch Go (Debug Mode)",
+            "type": "go",
+            "request": "launch",
+            "mode": "debug",
+            "program": "${workspaceFolder}/main.go",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "DATABASE_URL": "postgres://postgres:postgres@localhost:5433/theatre_api?sslmode=disable",
+                "PORT": "8080",
+                "GIN_MODE": "debug"
+            },
+            "args": [],
+            "showLog": true,
+            "trace": "verbose",
+            "logOutput": "rpc",
+            "stopOnEntry": false,
+            "console": "integratedTerminal"
+        },
+      
+    ]
+}
