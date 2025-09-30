@@ -6,8 +6,8 @@ import (
 	"theatre-management-system/src/business"
 	"theatre-management-system/src/constants"
 	"theatre-management-system/src/controllers"
-	"theatre-management-system/src/dao"
 	"theatre-management-system/src/models"
+	"theatre-management-system/src/repo"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
@@ -37,11 +37,11 @@ func main() {
 	}))
 
 	// Initialize repositories
-	locationRepo := dao.NewLocationRepository(db)
-	theatreTypeRepo := dao.NewTheatreTypeRepository(db)
-	showTypeRepo := dao.NewShowTypeRepository(db)
-	theatreRepo := dao.NewTheatreRepository(db)
-	showRepo := dao.NewShowRepository(db)
+	locationRepo := repo.NewLocationRepository(db)
+	theatreTypeRepo := repo.NewTheatreTypeRepository(db)
+	showTypeRepo := repo.NewShowTypeRepository(db)
+	theatreRepo := repo.NewTheatreRepository(db)
+	showRepo := repo.NewShowRepository(db)
 
 	// Initialize services
 	locationService := business.NewLocationService(locationRepo)
