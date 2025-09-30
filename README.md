@@ -18,7 +18,7 @@ The project follows a clean layered architecture:
 └── src/
     ├── controllers/      # HTTP request handlers
     ├── business/         # Business logic layer
-    ├── dao/             # Data access objects
+    ├── repo/             # data repository methods
     ├── dto/             # Data transfer objects
     ├── models/          # Database models
     ├── constants/       # Application constants
@@ -253,7 +253,7 @@ For immediate testing and evaluation, use the provided **Postman collection** (`
 1. Define models in `src/models/`
 2. Create DTOs in `src/dto/`
 3. Implement repository interface in `src/interfaces/`
-4. Create repository in `src/dao/`
+4. Create repository in `src/repo/`
 5. Implement business service in `src/business/`
 6. Create controller in `src/controllers/`
 7. Add routes in `main.go`
